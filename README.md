@@ -10,8 +10,9 @@ Image zu liefern.
 1. **dotenv-Wrapper entfernen** — `dotenv -e ../../.env -- ` aus `start`/`dev` in
    `/app/apps/{backend,orchestrator,frontend}/package.json` (Backend hängt sonst still nach Restart,
    wenn `.env` fehlt/leer ist)
-2. **Orchestrator-stdout umleiten** — `> /tmp/orchestrator.log 2>&1` ans `start`-Script des
-   Orchestrators (Webpack-Bundle-Output blockiert pm2-Socket-stdout → Workflow-Tasks werden nie abgeholt)
+2. **Backend- und Orchestrator-stdout umleiten** — `> /tmp/backend.log 2>&1` bzw.
+   `> /tmp/orchestrator.log 2>&1` an die `start`-Skripte. Das verhindert pm2-Socket-Backpressure;
+   andernfalls kann das Backend nach einem Recreate vor Port 3000 ohne Log-Ausgabe hängen bleiben.
 3. **Medien-Pfade relativ** (backend **und** orchestrator dist):
    - `local.storage.js`: `process.env.FRONTEND_URL + '/uploads' + publicPath` → `'/uploads' + publicPath`
      (SSRF-Guard blockt die eigene Tailscale-IP 100.64/10 → „Blocked IP")
