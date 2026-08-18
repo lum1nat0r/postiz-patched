@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       postiz-tag:
-        description: 'Postiz-Upstream-Tag (z.B. v2.23.0)'
+        description: 'Postiz-Upstream-Image-Tag (nur latest oder GHCR-Timestamp, keine v-Tags!)'
         required: false
-        default: v2.23.0
+        default: latest
 permissions:
   contents: read
   packages: write
@@ -25,8 +25,12 @@ jobs:
       - name: Tags
         id: tags
         run: |
-          TAG="${{ inputs.postiz-tag || 'v2.23.0' }}"
-          echo "tags=ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:postiz-${TAG}" >> "$GITHUB_OUTPUT"
+          TAG="${{ inputs.postiz-tag || 'latest' }}"
+          if [ "$TAG" = "latest" ]; then
+            echo "tags=ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tags=ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:postiz-${TAG}" >> "$GITHUB_OUTPUT"
+          fi
           echo "postiz_tag=${TAG}" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6
         with:
