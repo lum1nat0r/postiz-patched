@@ -55,6 +55,10 @@ for (const app of ['backend', 'orchestrator']) {
     'local.storage', storage, true);
   patchFile(`/app/apps/${app}/dist/libraries/nestjs-libraries/src/database/prisma/posts/posts.service.js`,
     'posts.service', posts, true);
+  // youtubepartner is a Content-ID/CMS-partner scope and blocks normal channel OAuth.
+  // Postiz does not use it for channel uploads or analytics, so omit it in both runtime bundles.
+  patchFile(`/app/apps/${app}/dist/libraries/nestjs-libraries/src/integrations/social/youtube.provider.js`,
+    'youtube-oauth-scope', [["            'https://www.googleapis.com/auth/youtubepartner',\n", '']], true);
 }
 
 console.log(LOG.join('\n'));

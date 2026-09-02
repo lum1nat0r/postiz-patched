@@ -19,6 +19,7 @@ Image zu liefern.
    - `posts.service.js` (`updateMedia`): `process.env.UPLOAD_DIRECTORY + m.path` → `m.path` und
      `process.env.UPLOAD_DIRECTORY + path` → `path` (verhindert `/uploads/uploads/…`-Doppelpräfix)
 4. **Belt-and-braces**: `/app/.env` wird im Image angelegt (falls doch etwas versucht, es zu lesen)
+5. **YouTube OAuth ohne CMS-Partner-Scope**: entfernt `youtubepartner`, das für Content-ID-/CMS-Partner reserviert ist und die Autorisierung normaler Kanäle mit Google-403 blockieren kann. Upload, Kanalzugriff und Analytics bleiben erhalten.
 
 ## Build
 
